@@ -58,3 +58,28 @@ Simply open the `frontend/index.html` file in any modern web browser:
 
 - **Interactive Sliders**: Adjust dimensions, height, and inclination angles dynamically; the natural language problem statement adapts automatically.
 - **Step-by-Step Player**: Play, pause, or skip through the drafting steps. Each step highlights the matching instruction in the procedure panel and animates the corresponding vectors on the canvas.
+
+---
+
+## ☁️ Cloud Deployment (Optional)
+
+### 1. Deploying the Backend to Render
+You can host the FastAPI server online for free on [Render](https://render.com/):
+1. Create a **Web Service** on Render pointing to this GitHub repository.
+2. Select **Python** as the environment runtime.
+3. Set **Root Directory** to `backend`.
+4. Set **Build Command** to `pip install -r requirements.txt`.
+5. Set **Start Command** to `uvicorn app:app --host 0.0.0.0 --port $PORT`.
+
+### 2. Deployed API URL Configuration
+Once your backend is live on Render, open `frontend/script.js` and set the `DEPLOYED_API_URL` constant at the top of the file to point to your Render app URL:
+```javascript
+const DEPLOYED_API_URL = "https://your-service-name.onrender.com";
+```
+Leaving it empty (`""`) will fallback to the local host (`http://127.0.0.1:8000`).
+
+### 3. Hosting the Frontend on GitHub Pages
+1. Go to your repository settings on GitHub.
+2. Select **Pages** from the sidebar.
+3. Under **Build and deployment**, select `Deploy from a branch` and set it to the `main` branch and the `/ (root)` folder.
+4. Click **Save**. Your site will be live on GitHub Pages!
