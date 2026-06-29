@@ -196,3 +196,92 @@ function reconstructQuestionStatement(side, length, hp, vp) {
     }
     document.getElementById('question-input').value = text;
 }
+
+async function submitQuestion() {
+    const questionText = document.getElementById("question-input").value.trim();
+    if (!questionText) {
+        alert("Please enter a question statement first!");
+        return;
+    }
+
+    // Stop autoplay
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        document.getElementById('play-btn').innerText = "▶";
+    }
+
+    const caseTitle = document.getElementById("case-title");
+    const stepsList = document.getElementById("steps-list");
+    const drawingArea = document.getElementById("drawing-area");
+    const metaContainer = document.getElementById("meta-container");
+    const givenBox = document.getElementById("given-data-box");
+    const foundBox = document.getElementById("found-values-box");
+    const animControls = document.getElementById("animation-controls");
+
+    stepsList.innerHTML = "<li class='active'>Solving projection geometry algorithms...</li>";
+    drawingArea.innerHTML = "<span style='color:#a1a1aa;'>Compiling vector node parameters...</span>";
+    metaContainer.style.display = "none";
+    animControls.style.display = "none";
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/solve`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: questionText })
+        });
+
+        const data = await response.json();
+        const result = data.result;
+
+        caseTitle.innerText = result.type;
+
+        // Render steps
+        stepsList.innerHTML = "";
+        result.steps.forEach((step, index) => {
+            const li = document.createElement("li");
+            li.id = `text-step-${index + 1}`;
+            li.innerText = step;
+            stepsList.appendChild(li);
+        });
+
+        // Insert SVG drawing
+        drawingArea.innerHTML = result.svg || "";
+
+        // Fill metadata
+        if (result.given_data && result.found_values) {
+            givenBox.innerHTML = result.given_data;
+            foundBox.innerHTML = result.found_values;
+            metaContainer.style.display = "grid";
+        }
+
+        // Setup player step range
+        setupInteractiveDrawing(result.steps.length);
+
+    } catch (error) {
+        console.error("Endpoint connect failure:", error);
+        stepsList.innerHTML = `<span style='color:#ef4444;'>Connection error. Make sure your server at ${API_BASE_URL} is running!</span>`;
+        drawingArea.innerHTML = "<span style='color:#ef4444;'>Draw server offline.</span>";
+    }
+}
+
+function setupInteractiveDrawing(totalSteps) {
+    currentStepIndex = 1; 
+    totalStepsCount = totalSteps;
+    
+    document.getElementById("animation-controls").style.display = "flex";
+    
+    const svgEl = document.querySelector("#drawing-area svg");
+    if (!svgEl) return;
+
+    // Map children nodes that don't have explicit step assignments
+    Array.from(svgEl.children).forEach(child => {
+        if (child.hasAttribute("data-step")) return;
+        
+        // Simple fallback
+        const tag = child.tagName;
+        if (tag === "line") child.setAttribute("data-step", "1");
+        else if (tag === "text") child.setAttribute("data-step", "1");
+        else child.setAttribute("data-step", "2");
+    });
+}
