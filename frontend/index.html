@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KTU Engineering Graphics AI Solver</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Application Header -->
+        <header>
+            <div class="logo-section">
+                <h1>KTU Engineering Graphics Solver</h1>
+                <p>Advanced orthographic & isometric projection vector engine</p>
+            </div>
+            <div class="badge">KTU Scheme 2019/2024</div>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="main-grid">
+            <!-- Left Control Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <h2>Geometric <span>Parameters</span></h2>
+                </div>
+
+                <!-- Template Dropdown Selector -->
+                <div class="input-group">
+                    <label for="template-select">Choose a Syllabus Template:</label>
+                    <select id="template-select" onchange="loadSelectedTemplate()">
+                        <optgroup label="📍 Points Projections">
+                            <option value="point-1">Point A: 20mm above HP, 30mm in front of VP</option>
+                            <option value="point-2">Point B: 35mm above HP, 25mm behind VP</option>
+                            <option value="point-3">Point C: 40mm below HP, 30mm behind VP</option>
+                            <option value="point-4">Point D: 25mm below HP, 45mm in front of VP</option>
+                        </optgroup>
+                        <optgroup label="📏 Lines Projections">
+                            <option value="line-1" selected>Line AB (Inclined to both HP and VP)</option>
+                            <option value="line-2">Line PQ (Inclined to HP, parallel to VP)</option>
+                            <option value="line-3">Line EF (Inclined to VP, parallel to HP)</option>
+                            <option value="line-4">Line RS (Parallel to both HP and VP)</option>
+                        </optgroup>
+                        <optgroup label="📐 Planes Projections">
+                            <option value="plane-1">Pentagonal Lamina resting on HP (Inclined to both)</option>
+                            <option value="plane-2">Square Plate resting on HP (Inclined to both)</option>
+                            <option value="plane-3">Hexagonal Lamina resting on HP (Inclined to both)</option>
+                            <option value="plane-4">Equilateral Triangular Lamina resting on HP</option>
+                            <option value="plane-5">Circular Lamina resting on HP</option>
+                        </optgroup>
+                        <optgroup label="📦 Solids Projections">
+                            <option value="solid-1">Square Prism (Axis inclined to HP)</option>
+                            <option value="solid-2">Pentagonal Pyramid (Axis inclined to HP)</option>
+                            <option value="solid-3">Cylinder (Axis inclined to HP)</option>
+                            <option value="solid-4">Cone (Axis inclined to HP)</option>
+                        </optgroup>
+                        <optgroup label="✂️ Sections of Solids">
+                            <option value="section-1">Section of Square Pyramid cut by AIP</option>
+                        </optgroup>
+                        <optgroup label="🗺️ Development of Surfaces">
+                            <option value="development-1">Development of Cut Square Prism</option>
+                            <option value="development-2">Radial Development of Square Pyramid</option>
+                        </optgroup>
+                        <optgroup label="🌐 Isometric Projections">
+                            <option value="isometric-1">Isometric View of Square Prism</option>
+                            <option value="isometric-2">Isometric Projection of Square Pyramid</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Text Area Input -->
+                <div class="input-group">
+                    <label for="question-input">Natural Language Problem Statement:</label>
+                    <textarea id="question-input" placeholder="Type or select a KTU exam template above..."></textarea>
+                </div>
+
+                <!-- Sliders for Dynamic Tuning -->
+                <div class="parameters-section">
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span id="label-side">Base Side / Dimension</span>
+                            <span id="val-side">30mm</span>
+                        </div>
+                        <input type="range" id="slider-side" min="5" max="100" value="30" oninput="updateSliders()">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span id="label-length">Length / Axis Height</span>
+                            <span id="val-length">65mm</span>
+                        </div>
+                        <input type="range" id="slider-length" min="5" max="150" value="65" oninput="updateSliders()">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span id="label-hp">HP Angle (θ / Cut)</span>
+                            <span id="val-hp-angle">45°</span>
+                        </div>
+                        <input type="range" id="slider-hp-angle" min="0" max="90" value="45" oninput="updateSliders()">
+                    </div>
+
+                    <div class="slider-container">
+                        <div class="slider-label">
+                            <span id="label-vp">VP Angle (φ)</span>
+                            <span id="val-vp-angle">30°</span>
+                        </div>
+                        <input type="range" id="slider-vp-angle" min="0" max="90" value="30" oninput="updateSliders()">
+                    </div>
+                </div>
+
+                <button class="solve-btn" onclick="submitQuestion()">
+                    <span>⚙️ Solve & Draw Projections</span>
+                </button>
+            </div>
+
+            <!-- Right Visualization Canvas -->
+            <div class="panel canvas-panel">
+                <div class="panel-header">
+                    <h2 id="case-title">Orthographic Layout Canvas</h2>
+                    <div class="step-counter" id="step-counter">Step 0/0</div>
+                </div>
+
+                <!-- Drawing Canvas -->
+                <div class="drawing-area-wrapper">
+                    <div id="drawing-area">
+                        <span>Select a template, customize parameters, and click Solve Projections...</span>
+                    </div>
+                </div>
+
+                <!-- Timeline Player -->
+                <div class="animation-controls" id="animation-controls" style="display: none;">
+                    <button class="ctrl-btn" onclick="changeStep(-1)">◀</button>
+                    <button class="ctrl-btn" onclick="toggleAutoPlay()" id="play-btn">▶</button>
+                    <button class="ctrl-btn" onclick="changeStep(1)">▶</button>
+                </div>
+
+                <!-- Technical Details -->
+                <div class="meta-grid" id="meta-container" style="display: none;">
+                    <div class="meta-box" style="border-left: 3px solid var(--primary);">
+                        <h4>Given Data</h4>
+                        <div class="meta-content" id="given-data-box"></div>
+                    </div>
+                    <div class="meta-box" style="border-left: 3px solid var(--success);">
+                        <h4>Measured / Found Values</h4>
+                        <div class="meta-content" id="found-values-box"></div>
+                    </div>
+                </div>
+
+                <!-- Steps list -->
+                <div class="input-group">
+                    <label>Interactive Drafting Procedure:</label>
+                    <div class="steps-container">
+                        <ol class="steps-list" id="steps-list">
+                            <li>Drafting instructions will compile here once solution is generated...</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
