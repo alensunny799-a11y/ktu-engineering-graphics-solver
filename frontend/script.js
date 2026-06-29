@@ -154,6 +154,7 @@ function configureSlidersForTopic(topic) {
     }
 }
 
+
 function updateSliders(reconstructText = true) {
     const side = document.getElementById('slider-side').value;
     const length = document.getElementById('slider-length').value;
@@ -284,4 +285,64 @@ function setupInteractiveDrawing(totalSteps) {
         else if (tag === "text") child.setAttribute("data-step", "1");
         else child.setAttribute("data-step", "2");
     });
+
+    renderActiveStepState();
+}
+
+function changeStep(direction) {
+    const nextTarget = currentStepIndex + direction;
+    if (nextTarget >= 1 && nextTarget <= totalStepsCount) {
+        currentStepIndex = nextTarget;
+        renderActiveStepState();
+    } else if (direction === 1 && currentStepIndex === totalStepsCount) {
+        // Loop back to start if playing forward at end
+        currentStepIndex = 1;
+        renderActiveStepState();
+    }
+}
+
+function toggleAutoPlay() {
+    const btn = document.getElementById('play-btn');
+    if (autoPlayInterval) {
+        clearInterval(autoPlayInterval);
+        autoPlayInterval = null;
+        btn.innerText = "▶";
+    } else {
+        btn.innerText = "⏸";
+        autoPlayInterval = setInterval(() => {
+            changeStep(1);
+        }, 2500); // 2.5s per step transition
+    }
+}
+
+function renderActiveStepState() {
+    document.getElementById("step-counter").innerText = `Step ${currentStepIndex}/${totalStepsCount}`;
+
+    const svgEl = document.querySelector("#drawing-area svg");
+    if (!svgEl) return;
+
+    // Toggle visibility of SVG elements based on data-step attribute
+    Array.from(svgEl.children).forEach(child => {
+        const itemStep = parseInt(child.getAttribute("data-step") || "1");
+        if (itemStep <= currentStepIndex) {
+            child.style.opacity = "1";
+            child.style.visibility = "visible";
+            child.style.transition = "opacity 0.3s ease, visibility 0.3s ease";
+        } else {
+            child.style.opacity = "0";
+            child.style.visibility = "hidden";
+        }
+    });
+
+    // Manage highlighting of text list steps
+    for (let i = 1; i <= totalStepsCount; i++) {
+        const textLi = document.getElementById(`text-step-${i}`);
+        if (!textLi) continue;
+        if (i === currentStepIndex) {
+            textLi.classList.add('active');
+            textLi.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+            textLi.classList.remove('active');
+        }
+    }
 }
