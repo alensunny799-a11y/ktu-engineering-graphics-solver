@@ -1,6 +1,6 @@
 // API Configuration
 // Change DEPLOYED_API_URL to your Render web service URL (e.g. "https://your-app.onrender.com") when deployed
-const DEPLOYED_API_URL = "";
+const DEPLOYED_API_URL = "https://ktu-engineering-graphics-solver.onrender.com";
 const API_BASE_URL = DEPLOYED_API_URL || "http://127.0.0.1:8000";
 
 let currentTopic = 'point';
