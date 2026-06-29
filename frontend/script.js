@@ -80,3 +80,119 @@ function loadTemplate(tpl) {
 
     updateSliders(false); // Update numbers without modifying the text area
 }
+
+function configureSlidersForTopic(topic) {
+    const sSide = document.getElementById('slider-side');
+    const sLength = document.getElementById('slider-length');
+    const sHP = document.getElementById('slider-hp-angle');
+    const sVP = document.getElementById('slider-vp-angle');
+
+    const lblSide = sSide.parentElement.querySelector('.slider-label span:first-child');
+    const lblLength = sLength.parentElement.querySelector('.slider-label span:first-child');
+    const lblHP = sHP.parentElement.querySelector('.slider-label span:first-child');
+    const lblVP = sVP.parentElement.querySelector('.slider-label span:first-child');
+
+    // Show all by default
+    sSide.parentElement.style.display = 'flex';
+    sLength.parentElement.style.display = 'flex';
+    sHP.parentElement.style.display = 'flex';
+    sVP.parentElement.style.display = 'flex';
+
+    if (topic === 'point') {
+        lblSide.innerText = "Above/Below HP";
+        lblLength.innerText = "In Front/Behind VP";
+        sHP.parentElement.style.display = 'none';
+        sVP.parentElement.style.display = 'none';
+        
+        sSide.min = 5; sSide.max = 80;
+        sLength.min = 5; sLength.max = 80;
+    } 
+    else if (topic === 'line') {
+        lblSide.innerText = "End A Above HP";
+        lblLength.innerText = "True Length";
+        lblHP.innerText = "HP Inclination (θ)";
+        lblVP.innerText = "VP Inclination (φ)";
+        
+        sSide.min = 5; sSide.max = 50;
+        sLength.min = 40; sLength.max = 120;
+    }
+    else if (topic === 'plane') {
+        lblSide.innerText = "Side Length / Diam.";
+        sLength.parentElement.style.display = 'none';
+        lblHP.innerText = "Surface Inclination (θ)";
+        lblVP.innerText = "Edge Inclination (φ)";
+        
+        sSide.min = 15; sSide.max = 60;
+    }
+    else if (topic === 'solid') {
+        lblSide.innerText = "Base Side / Diameter";
+        lblLength.innerText = "Axis Length";
+        lblHP.innerText = "Axis Inclination (θ)";
+        lblVP.innerText = "VP Inclination (φ)";
+        sVP.parentElement.style.display = 'flex';
+        
+        sSide.min = 15; sSide.max = 50;
+        sLength.min = 40; sLength.max = 100;
+    }
+    else if (topic === 'section' || topic === 'development') {
+        lblSide.innerText = "Base Side / Diameter";
+        lblLength.innerText = "Axis Length";
+        lblHP.innerText = "Cutting Angle";
+        sVP.parentElement.style.display = 'none';
+        
+        sSide.min = 20; sSide.max = 50;
+        sLength.min = 40; sLength.max = 100;
+    }
+    else if (topic === 'isometric') {
+        lblSide.innerText = "Base Side";
+        lblLength.innerText = "Height";
+        sHP.parentElement.style.display = 'none';
+        sVP.parentElement.style.display = 'none';
+        
+        sSide.min = 20; sSide.max = 60;
+        sLength.min = 30; sLength.max = 100;
+    }
+}
+
+function updateSliders(reconstructText = true) {
+    const side = document.getElementById('slider-side').value;
+    const length = document.getElementById('slider-length').value;
+    const hp = document.getElementById('slider-hp-angle').value;
+    const vp = document.getElementById('slider-vp-angle').value;
+
+    document.getElementById('val-side').innerText = side + "mm";
+    document.getElementById('val-length').innerText = length + "mm";
+    document.getElementById('val-hp-angle').innerText = hp + "°";
+    document.getElementById('val-vp-angle').innerText = vp + "°";
+
+    if (reconstructText) {
+        // Build a dynamic text statement matching the selected slider parameters
+        reconstructQuestionStatement(side, length, hp, vp);
+    }
+}
+
+function reconstructQuestionStatement(side, length, hp, vp) {
+    let text = "";
+    if (currentTopic === 'point') {
+        text = `Point A is ${side}mm above HP and ${length}mm in front of VP. Draw its projections.`;
+    } 
+    else if (currentTopic === 'line') {
+        text = `A line AB ${length}mm long has its end A ${side}mm above HP and 20mm in front of VP. The line is inclined at ${hp} degrees to HP and ${vp} degrees to VP. Draw its projections.`;
+    }
+    else if (currentTopic === 'plane') {
+        text = `A pentagonal lamina of ${side}mm side has one of its edges on HP. The surface is inclined at ${hp} degrees to HP and the resting edge is inclined at ${vp} degrees to VP.`;
+    }
+    else if (currentTopic === 'solid') {
+        text = `A square prism of base side ${side}mm and axis length ${length}mm rests on HP with one of its base edges. Its axis is inclined at ${hp} degrees to HP and the resting edge is inclined at ${vp} degrees to VP.`;
+    }
+    else if (currentTopic === 'section') {
+        text = `A square pyramid of base side ${side}mm and axis length ${length}mm rests on HP with its base. It is cut by a section plane perpendicular to VP and inclined at ${hp} degrees to HP, passing through a point on the axis 30mm from the base.`;
+    }
+    else if (currentTopic === 'development') {
+        text = `A square prism of base side ${side}mm and axis length ${length}mm rests on HP with its base. It is cut by a section plane inclined at ${hp} degrees to HP. Draw the development of its lateral surface.`;
+    }
+    else if (currentTopic === 'isometric') {
+        text = `Draw the isometric view of a square prism of base side ${side}mm and height ${length}mm resting vertically on its base.`;
+    }
+    document.getElementById('question-input').value = text;
+}
