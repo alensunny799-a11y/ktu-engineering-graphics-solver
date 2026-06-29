@@ -293,3 +293,249 @@ input[type="range"]::-webkit-slider-thumb:hover {
     border-color: rgba(59, 130, 246, 0.2);
     color: var(--text-main);
 }
+
+/* Solver Button */
+.solve-btn {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+}
+
+.solve-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+}
+
+.solve-btn:active {
+    transform: translateY(0);
+}
+
+/* Steps list */
+.steps-container {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+ol.steps-list {
+    margin: 0;
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+ol.steps-list li {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+}
+
+ol.steps-list li.active {
+    background: var(--primary-glow);
+    border-left-color: var(--primary);
+    border-color: #cbd5e1;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* Drawing Area */
+.canvas-panel {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.drawing-area-wrapper {
+    background-color: #faf9f6;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* CAD Grid Background */
+#drawing-area {
+    width: 100%;
+    min-height: 420px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: 
+        linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+#drawing-area > span {
+    color: #94a3b8;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* SVG Drawing Sheet Styles */
+#drawing-area svg {
+    background-color: #faf9f6 !important;
+    border: none !important;
+}
+
+#drawing-area svg line[stroke="black"], 
+#drawing-area svg path[stroke="black"] {
+    stroke: #1e293b !important; /* Graphite Dark */
+    stroke-width: 1.5px !important;
+}
+
+#drawing-area svg text[fill="black"] {
+    fill: #1e293b !important;
+    font-weight: 600 !important;
+}
+
+#drawing-area svg line[stroke="blue"], 
+#drawing-area svg polygon[stroke="blue"],
+#drawing-area svg circle[stroke="blue"],
+#drawing-area svg path[stroke="blue"] {
+    stroke: #1d4ed8 !important; /* Top View - Deep Blue */
+}
+
+#drawing-area svg text[fill="blue"] {
+    fill: #1d4ed8 !important;
+    font-weight: bold !important;
+}
+
+#drawing-area svg line[stroke="red"], 
+#drawing-area svg polygon[stroke="red"],
+#drawing-area svg circle[stroke="red"],
+#drawing-area svg path[stroke="red"] {
+    stroke: #b91c1c !important; /* Front View - Crimson Red */
+}
+
+#drawing-area svg text[fill="red"] {
+    fill: #b91c1c !important;
+    font-weight: bold !important;
+}
+
+#drawing-area svg line[stroke="purple"],
+#drawing-area svg text[fill="purple"] {
+    stroke: #701a75 !important; /* Section Line - Dark Magenta */
+}
+
+#drawing-area svg text[fill="purple"] {
+    fill: #701a75 !important;
+    font-weight: bold !important;
+}
+
+#drawing-area svg line[stroke="green"],
+#drawing-area svg polygon[stroke="green"],
+#drawing-area svg text[fill="green"] {
+    stroke: #047857 !important; /* True Shape - Dark Green */
+}
+
+#drawing-area svg text[fill="green"] {
+    fill: #047857 !important;
+    font-weight: bold !important;
+}
+
+#drawing-area svg line[stroke="#bdc3c7"],
+#drawing-area svg line[stroke="#7f8c8d"],
+#drawing-area svg line[stroke="#95a5a6"],
+#drawing-area svg line[stroke="gray"],
+#drawing-area svg line[stroke="#bdc3c7"] {
+    stroke: #94a3b8 !important; /* Projectors - Light Graphite Gray */
+    stroke-width: 0.75px !important;
+    stroke-dasharray: 2, 2 !important;
+}
+
+#drawing-area svg circle[fill="black"],
+#drawing-area svg circle[fill="red"],
+#drawing-area svg circle[fill="blue"],
+#drawing-area svg circle[fill="purple"],
+#drawing-area svg circle[fill="#7f8c8d"],
+#drawing-area svg circle[fill="#95a5a6"] {
+    fill: #ffffff !important;
+    stroke: #1e293b !important;
+    stroke-width: 1.5px !important;
+}
+
+/* Player Timeline Controls */
+.animation-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 10px 20px;
+    border-radius: 12px;
+}
+
+.ctrl-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.ctrl-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.step-counter {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Technical Details Boxes */
+.meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.meta-box {
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    padding: 12px 16px;
+    border-radius: 10px;
+}
+
+.meta-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.meta-content {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-main);
+}
